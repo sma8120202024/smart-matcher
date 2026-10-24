@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام المطابقة الذكي - الإصدار 3.0.0 | م. سمير الكمالي</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2563EB;
+            --primary-hover: #1D4ED8;
+            --primary-light: #EFF6FF;
+            --success: #16A34A;
+            --success-light: #DCFCE7;
+            --warning: #D97706;
+            --warning-light: #FEF3C7;
+            --danger: #DC2626;
+            --danger-light: #FEE2E2;
+            --text-dark: #1F2937;
+            --text-muted: #64748B;
+            --bg-page: #F8FAFC;
+            --border: #E2E8F0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Cairo', 'Segoe UI', Tahoma, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-page);
+            color: var(--text-dark);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .container {
+            max-width: 1180px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* شريط التنقل العلوي */
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 76px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 800;
+            font-size: 1.35rem;
+            color: var(--text-dark);
+        }
+
+        .logo-badge {
+            background: var(--primary);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 28px;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 11px 24px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 0.98rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: #fff;
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            background: #fff;
+            color: var(--text-dark);
+            border: 1px solid var(--border);
+        }
+
+        .btn-outline:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            background: var(--primary-light);
+        }
+
+        .btn-whatsapp {
+            background: #25D366;
+            color: #fff;
+            box-shadow: 0 4px 14px rgba(37, 211, 102, 0.3);
+        }
+
+        .btn-whatsapp:hover {
+            background: #1EBE5B;
+            transform: translateY(-2px);
+        }
+
+        /* القسم الترحيبي (Hero) */
+        .hero {
+            padding: 75px 0 60px;
+            background: radial-gradient(circle at top right, #EFF6FF 0%, #F8FAFC 65%);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1.15fr 0.85fr;
+            gap: 45px;
+            align-items: center;
+        }
+
+        .badge-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--primary-light);
+            color: var(--primary);
+            padding: 6px 16px;
+            border-radius: 999px;
+            font-weight: 700;
+            font-size: 0.88rem;
+            margin-bottom: 18px;
+            border: 1px solid #BFDBFE;
+        }
+
+        .hero h1 {
+            font-size: 2.65rem;
+            line-height: 1.3;
+            font-weight: 800;
+            color: var(--text-dark);
+            margin-bottom: 18px;
+        }
+
+        .hero h1 span {
+            color: var(--primary);
+        }
+
+        .hero p {
+            font-size: 1.12rem;
+            color: var(--text-muted);
+            margin-bottom: 30px;
+        }
+
+        .hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+            margin-bottom: 26px;
+        }
+
+        .hero-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .hero-meta span {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* محاكاة نافذة التفعيل المطابقة للبرنامج */
+        .app-window {
+            background: #fff;
+            border-radius: 14px;
+            border: 1px solid var(--border);
+            box-shadow: 0 20px 40px rgba(15, 23, 42, 0.08);
+            overflow: hidden;
+        }
+
+        .window-header {
+            background: #fff;
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+            border-right: 5px solid var(--primary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .window-title h3 {
+            font-size: 1.15rem;
+            color: var(--text-dark);
+        }
+
+        .window-title p {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            margin: 0;
+        }
+
+        .window-badge {
+            background: var(--primary-light);
+            color: var(--primary);
+            font-size: 0.75rem;
+            font-weight: 800;
+            padding: 4px 10px;
+            border-radius: 6px;
+        }
+
+        .window-body {
+            padding: 18px;
+            background: var(--bg-page);
+        }
+
+        .ui-card {
+            background: #fff;
+            border: 1px solid var(--border);
+            padding: 12px 15px;
+            margin-bottom: 12px;
+            border-radius: 8px;
+        }
+
+        .ui-status {
+            border-right: 4px solid var(--warning);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.88rem;
+            font-weight: 600;
+        }
+
+        .ui-code-box {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .ui-input {
+            flex: 1;
+            background: var(--bg-page);
+            border: 1px solid var(--border);
+            padding: 8px 12px;
+            text-align: center;
+            font-family: Consolas, monospace;
+            font-weight: 700;
+            letter-spacing: 1px;
+            border-radius: 6px;
+            color: var(--text-dark);
+        }
+
+        /* قسم المميزات */
+        section {
+            padding: 75px 0;
+        }
+
+        .section-header {
+            text-align: center;
+            max-width: 700px;
+            margin: 0 auto 50px;
+        }
+
+        .section-header h2 {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 12px;
+        }
+
+        .section-header p {
+            color: var(--text-muted);
+            font-size: 1.05rem;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+            gap: 24px;
+        }
+
+        .feature-card {
+            background: #fff;
+            border: 1px solid var(--border);
+            padding: 28px;
+            border-radius: 14px;
+            transition: all 0.25s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            box-shadow: 0 12px 30px rgba(37, 99, 235, 0.08);
+        }
+
+        .feature-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            background: var(--primary-light);
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 18px;
+        }
+
+        .feature-card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+
+        .feature-card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        /* قسم المحاكاة التفاعلي */
+        .demo-box {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 28px;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.05);
+        }
+
+        .demo-filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .filter-btn {
+            padding: 8px 18px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: var(--bg-page);
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .filter-btn.active {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: right;
+        }
+
+        th, td {
+            padding: 13px 15px;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.95rem;
+        }
+
+        th {
+            background: var(--bg-page);
+            color: var(--text-muted);
+            font-weight: 700;
+        }
+
+        .status-tag {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 999px;
+            font-size: 0.82rem;
+            font-weight: 700;
+        }
+
+        .tag-match { background: var(--success-light); color: var(--success); }
+        .tag-diff { background: var(--warning-light); color: var(--warning); }
+        .tag-missing { background: var(--danger-light); color: var(--danger); }
+
+        /* قسم التحميل والتواصل */
+        .cta-section {
+            background: linear-gradient(135deg, #1E3A8A 0%, #2563EB 100%);
+            color: #fff;
+            border-radius: 20px;
+            padding: 50px 40px;
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .cta-section h2 {
+            font-size: 2.1rem;
+            margin-bottom: 14px;
+        }
+
+        .cta-section p {
+            color: #DBEAFE;
+            max-width: 650px;
+            margin: 0 auto 30px;
+            font-size: 1.1rem;
+        }
+
+        .developer-card {
+            background: #EFF6FF;
+            border: 1px solid #BFDBFE;
+            border-radius: 16px;
+            padding: 32px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .dev-info h3 {
+            color: var(--primary);
+            font-size: 1.35rem;
+            margin-bottom: 6px;
+        }
+
+        .dev-contacts {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+        }
+
+        footer {
+            background: #fff;
+            border-top: 1px solid var(--border);
+            padding: 28px 0;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.92rem;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            left: 24px;
+            background: var(--text-dark);
+            color: #fff;
+            padding: 12px 22px;
+            border-radius: 10px;
+            font-weight: 700;
+            display: none;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            z-index: 2000;
+        }
+
+        @media (max-width: 900px) {
+            .hero-grid { grid-template-columns: 1fr; }
+            .nav-links { display: none; }
+            .hero h1 { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- شريط التنقل -->
+    <header>
+        <div class="container navbar">
+            <div class="logo">
+                <div class="logo-badge">🔐</div>
+                <span>نظام المطابقة الذكي</span>
+            </div>
+            <nav class="nav-links">
+                <a href="#features">المميزات</a>
+                <a href="#demo">معاينة المطابقة</a>
+                <a href="#download">التحميل</a>
+                <a href="#support">الدعم الفني</a>
+            </nav>
+            <a href="https://github.com/sma8120202024/smart-matcher/releases/download/v3.0.0/SmartMatcher_Setup_v3.0.0.exe" class="btn btn-primary">⬇ تحميل النسخة التجريبية</a>
+        </div>
+    </header>
+
+    <!-- الواجهة الرئيسية -->
+    <section class="hero">
+        <div class="container hero-grid">
+            <div>
+                <div class="badge-pill">✨ الإصدار 3.0.0 — متوافق مع جميع أنظمة ويندوز</div>
+                <h1>دقة متناهية، سرعة فائقة.. <span>وداعاً لأخطاء المراجعة اليدوية!</span></h1>
+                <p>
+                    الحل البرمجي الأسرع لمطابقة ومقارنة ملفات الإكسل والجداول المالية والإدارية بدقة 100%. يكتشف الفروقات، السجلات المفقودة، والتشابهات النصية العربية في ثوانٍ معدودة.
+                </p>
+                <div class="hero-actions">
+                    <a href="https://github.com/sma8120202024/smart-matcher/releases/download/v3.0.0/SmartMatcher_Setup_v3.0.0.exe" class="btn btn-primary">
+                        📥 تحميل البرنامج للويندوز (v3.0.0 - 46.6 MB)
+                    </a>
+                    <a href="https://wa.me/967776441718?text=مرحباً%20مهندس%20سمير،%20أرغب%20في%20الحصول%20على%20مفتاح%20تفعيل%20لبرنامج%20المطابقة%20الذكي" target="_blank" class="btn btn-whatsapp">
+                        💬 طلب مفتاح تفعيل عبر واتساب
+                    </a>
+                </div>
+                <div class="hero-meta">
+                    <span>✔️ تجربة مجانية 7 أيام</span>
+                    <span>✔️ يعمل على ويندوز 7 / 8 / 10 / 11</span>
+                    <span>✔️ يدعم النواتين 32-bit و 64-bit</span>
+                </div>
+            </div>
+
+            <!-- معاينة حية مطابقة لنافذة التفعيل في البرنامج -->
+            <div class="app-window">
+                <div class="window-header">
+                    <div class="window-title">
+                        <h3>🔐 تفعيل نظام المطابقة الذكي</h3>
+                        <p>إدارة الترخيص وربط النسخة بهذا الجهاز بطريقة آمنة</p>
+                    </div>
+                    <span class="window-badge">SMART MATCHER v3.0</span>
+                </div>
+                <div class="window-body">
+                    <div class="ui-card ui-status">
+                        <span style="color: var(--warning); font-size: 1.2rem;">⏱</span>
+                        <span>الفترة التجريبية سارية — متبقٍ 7 أيام. يمكنك التجربة أو التفعيل.</span>
+                    </div>
+                    <div class="ui-card">
+                        <div style="font-weight: 700; font-size: 0.9rem;">معرّف هذا الجهاز (Machine ID)</div>
+                        <div style="font-size: 0.8rem; color: var(--text-muted);">أرسل هذا المعرّف إلى المطور للحصول على مفتاح التفعيل المخصص:</div>
+                        <div class="ui-code-box">
+                            <input type="text" class="ui-input" value="A9F4C-82D1E-77B3A-50E9F" readonly>
+                            <button class="btn btn-outline" style="padding: 6px 14px;" onclick="showToast('تم نسخ معرّف الجهاز التجريبي!')">📋 نسخ</button>
+                        </div>
+                    </div>
+                    <div class="ui-card" style="background: var(--primary-light); border-color: #BFDBFE; margin-bottom: 0;">
+                        <div style="font-weight: 700; color: var(--primary); font-size: 0.9rem;">👨‍💻 تطوير وبرمجة: م. سمير الكمالي</div>
+                        <div style="font-size: 0.85rem; color: var(--text-dark); margin-top: 4px;">
+                            📞 776441718 &nbsp;|&nbsp; ✉ samirakamaly8@gmail.com
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- المميزات الرئيسية -->
+    <section id="features">
+        <div class="container">
+            <div class="section-header">
+                <h2>لماذا نظام المطابقة الذكي؟</h2>
+                <p>صُمم خصيصاً للمحاسبين، المراجعين الماليين، ومديري البيانات لاختصار ساعات العمل المرهقة إلى ضغطة زر</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>سرعة معالجة فائقة</h3>
+                    <p>قراءة ومقارنة آلاف الصفوف والسجلات في لحظات دون تجميد النظام أو استهلاك موارد الجهاز.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h3>معالجة ذكية للنصوص العربية</h3>
+                    <p>تجاوز فروقات الهمزات (أ، إ، ا)، التاء المربوطة والهاء، والمسافات الزائدة تلقائياً للوصول إلى تطابق دقيق.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>دعم شامل لملفات Excel</h3>
+                    <p>استيراد مباشر لملفات <code>.xlsx</code> و <code>.xls</code> مع دعم كامل للترميز العربي (Windows-1256) بدون أي أخطاء.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📑</div>
+                    <h3>تقارير فرز فورية</h3>
+                    <p>فصل تلقائي للسجلات المتطابقة، السجلات ذات الفروقات المالية، والسجلات المفقودة في جداول جاهزة للتصدير.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🖥️</div>
+                    <h3>توافق شامل وخفة عالية</h3>
+                    <p>يعمل بكفاءة تامة على جميع إصدارات ويندوز القديمة والحديثة، ويدعم الشاشات عالية الدقة (High DPI).</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🛡️</div>
+                    <h3>حماية وترخيص موثوق</h3>
+                    <p>يرتبط الترخيص ببصمة العتاد الخاصة بجهازك مع فترة تجربة مجانية لمدة 7 أيام كاملة قبل الشراء.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- قسم محاكاة المطابقة التفاعلي -->
+    <section id="demo" style="background: #fff; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+        <div class="container">
+            <div class="section-header">
+                <h2>معاينة تفاعلية لنتائج المطابقة</h2>
+                <p>شاهد كيف يكتشف البرنامج التطابق الذكي للأسماء والفروقات المالية بين كشفين مختلفين</p>
+            </div>
+            <div class="demo-box">
+                <div class="demo-filters">
+                    <button class="filter-btn active" onclick="filterDemo('all', this)">الكل (4 سجلات)</button>
+                    <button class="filter-btn" onclick="filterDemo('match', this)">✓ متطابق ذكياً (2)</button>
+                    <button class="filter-btn" onclick="filterDemo('diff', this)">⚠ فرق في المبلغ (1)</button>
+                    <button class="filter-btn" onclick="filterDemo('missing', this)">✕ سجل مفقود (1)</button>
+                </div>
+                <div style="overflow-x: auto;">
+                    <table id="demoTable">
+                        <thead>
+                            <tr>
+                                <th>الاسم في الكشف الأول</th>
+                                <th>الاسم في الكشف الثاني</th>
+                                <th>المبلغ (1)</th>
+                                <th>المبلغ (2)</th>
+                                <th>نتيجة المطابقة الذكية</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr data-type="match">
+                                <td>أحمد محمد علي ابراهيم</td>
+                                <td>احمد محمد على إبراهيم</td>
+                                <td>150,000</td>
+                                <td>150,000</td>
+                                <td><span class="status-tag tag-match">✓ متطابق (توحيد الهمزات والياء)</span></td>
+                            </tr>
+                            <tr data-type="match">
+                                <td>شركة النور للتجارة والمقاولات</td>
+                                <td>شركه النور للتجاره والمقاولات</td>
+                                <td>480,000</td>
+                                <td>480,000</td>
+                                <td><span class="status-tag tag-match">✓ متطابق (توحيد التاء المربوطة)</span></td>
+                            </tr>
+                            <tr data-type="diff">
+                                <td>خالد عبد الله الصالحي</td>
+                                <td>خالد عبدالله الصالحي</td>
+                                <td>95,000</td>
+                                <td>90,000</td>
+                                <td><span class="status-tag tag-diff">⚠ تطابق بالاسم - فرق مالي (5,000)</span></td>
+                            </tr>
+                            <tr data-type="missing">
+                                <td>مؤسسة الأفق الحديث</td>
+                                <td>— غير موجود —</td>
+                                <td>210,000</td>
+                                <td>0</td>
+                                <td><span class="status-tag tag-missing">✕ مفقود في الكشف الثاني</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- قسم التحميل والدعم الفني -->
+    <section id="download">
+        <div class="container">
+            <div class="cta-section">
+                <h2>ابدأ تجربتك المجانية اليوم (7 أيام كاملة)</h2>
+                <p>حمّل النسخة الرسمية (الإصدار 3.0.0) الآن وثبّتها في ثوانٍ، واستمتع بكافة المزايا قبل اتخاذ قرار التفعيل الدائم.</p>
+                <a href="https://github.com/sma8120202024/smart-matcher/releases/download/v3.0.0/SmartMatcher_Setup_v3.0.0.exe" class="btn" style="background: #fff; color: var(--primary); font-size: 1.1rem; padding: 14px 34px;">
+                    ⬇ تحميل المثبت الرسمي (SmartMatcher_Setup_v3.0.0.exe)
+                </a>
+            </div>
+
+            <!-- بطاقة التواصل مع المطور -->
+            <div id="support" class="developer-card">
+                <div class="dev-info">
+                    <h3>👨‍💻 الدعم الفني وطلب التراخيص</h3>
+                    <p style="font-weight: 700; color: var(--text-dark); margin-bottom: 4px;">تطوير وبرمجة: م. سمير الكمالي</p>
+                    <p style="color: var(--text-muted); font-size: 0.92rem;">لطلب مفتاح تفعيل دائم، انسخ "معرّف الجهاز" من داخل البرنامج وأرسله عبر الواتساب أو البريد الإلكتروني.</p>
+                </div>
+                <div class="dev-contacts">
+                    <a href="https://wa.me/967776441718?text=مرحباً%20مهندس%20سمير،%20أرغب%20في%20تفعيل%20برنامج%20المطابقة%20الذكي" target="_blank" class="btn btn-whatsapp">
+                        💬 واتساب: 776441718
+                    </a>
+                    <button class="btn btn-outline" onclick="copyText('776441718', 'تم نسخ رقم الهاتف: 776441718')">
+                        📞 نسخ الرقم: 776441718
+                    </button>
+                    <button class="btn btn-outline" onclick="copyText('samirakamaly8@gmail.com', 'تم نسخ البريد الإلكتروني!')">
+                        ✉ samirakamaly8@gmail.com
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- التذييل -->
+    <footer>
+        <div class="container">
+            <p>© <span id="year"></span> م. سمير الكمالي — جميع الحقوق محفوظة.</p>
+            <p style="font-size: 0.82rem; margin-top: 4px;">نظام المطابقة الذكي (Smart Matcher v3.0.0)</p>
+        </div>
+    </footer>
+
+    <div id="toast" class="toast"></div>
+
+    <script>
+        document.getElementById('year').textContent = new Date().getFullYear();
+
+        function filterDemo(type, btn) {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            document.querySelectorAll('#demoTable tbody tr').forEach(row => {
+                if (type === 'all' || row.getAttribute('data-type') === type) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+
+        function copyText(text, msg) {
+            navigator.clipboard.writeText(text).then(() => showToast(msg));
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.style.display = 'block';
+            setTimeout(() => { toast.style.display = 'none'; }, 3000);
+        }
+    </script>
+</body>
+</html>
